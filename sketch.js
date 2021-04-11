@@ -4,7 +4,10 @@ var OVER = 0
 var gameState = PLAY
 var blockIMG
 var score = 0
+var gameOver, restart
 function preload() {
+  restartIMG = loadImage("images/restart.png")
+  gameovrIMG = loadImage("images/gameOver.png")
   blockIMG = loadImage("images/question.png")
   groundIMG = loadImage("images/ground2.png")
   bg = loadImage("images/bg.png")
@@ -24,6 +27,16 @@ function setup() {
   ground.addImage("ground",groundIMG);
   ground.x = ground.width /2;
   
+  gameOver = createSprite(300,125,100,20)
+  gameOver.addImage(gameovrIMG)
+  gameOver.scale = 0.75
+  gameOver.visible=false
+
+  restart = createSprite(300,175,100,20)
+  restart.addImage(restartIMG)
+  restart.scale = 0.4
+  restart.visible=false
+
   ingroud = createSprite(200,295,400,10)
   ingroud.visible=false
 
@@ -58,6 +71,8 @@ function draw() {
     }
   }
   else{
+    gameOver.visible=true;
+    restart.visible=true;
     mario.changeAnimation("marioDead")
     ground.velocityX = 0;
     mario.velocityY = 0;
@@ -65,6 +80,11 @@ function draw() {
     enemyGroup.setLifetimeEach(-100)
     blockGroup.setVelocityXEach(0);
     blockGroup.setLifetimeEach(-100)
+
+
+    if(mousePressedOver(restart)){
+      reset();
+    }
   }
   mario.collide(ingroud)
 
@@ -91,4 +111,15 @@ function blockSpawn() {
     block.lifetime = 300
     blockGroup.add(block)
   }
+}
+
+function reset() {
+  gameState = PLAY
+  gameOver.visible=false;
+  restart.visible=false;
+  blockGroup.destroyEach();
+  enemyGroup.destroyEach();
+  mario.changeAnimation("mario")
+  ground.velocityX = -3;
+  score = 0
 }
